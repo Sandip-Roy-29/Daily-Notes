@@ -104,8 +104,11 @@ const loginUser = asyncHandler(async (req,res) => {
 })
 
 const logoutUser = asyncHandler(async (req, res) => {
+
+    // Take refresh token
     const refreshToken = req.cookies?.refreshToken;
 
+    // Reset refresh token
     if(refreshToken){
         await User.findOneAndUpdate(
             { refreshToken },
@@ -113,11 +116,13 @@ const logoutUser = asyncHandler(async (req, res) => {
         );
     }
 
+    // Create options
     const options = {
         httpOnly: true,
         secure: true
     }
 
+    // Send response
     return res
     .status(200)
     .clearCookie("accessToken", options)
