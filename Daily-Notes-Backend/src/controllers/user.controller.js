@@ -175,9 +175,91 @@ const refreshAccessToken = asyncHandler(async (req,res) => {
     .json(new ApiResponse(200,{accessToken: accessToken, refreshToken: refreshToken},"Access token refreshed"));
 })
 
+const changeCurrentPassword = asyncHandler(async (req, res) => {
+
+    // Take the information
+    const {oldPassword, newPassword, confirmPassword} = req.body;
+
+    if([oldPassword, newPassword, confirmPassword].some(field => !field || field === "")){
+        throw new ApiError(400,"All fields are required");
+    }
+
+    if(newPassword.length < 8) throw new ApiError(400,"Password must be at least 8 character");
+
+    if(newPassword !== confirmPassword) throw new ApiError(400,"Please enter correct password");
+
+    // Get user
+    const user = await User.findById(req.user?._id);
+
+    if (!user) throw new ApiError(401, "User not found");
+
+    // Change user password
+    const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+
+    if(!isPasswordCorrect) throw new ApiError(401,"Invalid credentials");
+
+    // Set and save new password
+    user.password = newPassword;
+    user.refreshToken = undefined;
+    await user.save();
+
+    // Retuen a response
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,"Password changed successfully")
+    )
+})
+
+const getCurrentUser = asyncHandler(async (req, res) => {
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,req.user,"Current user fetched successfully")
+    )
+})
+
+const updateAccountDetails = asyncHandler(async (req,res) => {
+
+    // Take information
+    const { username, email } = req.body;
+
+    // Validation
+    if([username, email].some(field => !field || field.trim() == "")) throw new ApiError(400,"All fields are required");
+    
+    if (username === req.user.username) throw new ApiError(400, "Username is unchanged");
+    if (email === req.user.email) throw new ApiError(400, "Email is unchanged");
+
+    // Take user and change credentials
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set:{
+                username: username,
+                email: email
+            }
+        },
+        {
+            new: true
+        }
+    ).select("-password -refreshToken");
+
+    if (!user) throw new ApiError(404, "User not found");
+
+    // Create a response and send it
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,user,"Account details updated successfully")
+    )
+})
+
 export { 
     registerUser,
     loginUser,
     logoutUser,
-    refreshAccessToken
+    refreshAccessToken,
+    changeCurrentPassword,
+    getCurrentUser,
+    updateAccountDetails
 };
