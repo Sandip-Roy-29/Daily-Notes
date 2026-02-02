@@ -5,7 +5,8 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 
 // POST    /notes - Done
 // PUT     /notes/:noteId/title - Done
-// DELETE  /notes/:noteId
+// DELETE  /notes/:noteId - Done
+// GET     /notes - Done
 
 // POST    /notes/:noteId/contents
 // PUT     /notes/:noteId/contents/:contentId
@@ -78,8 +79,20 @@ const deleteNotes = asyncHandler(async (req, res) => {
     )
 })
 
+const getCurrentNote = asyncHandler(async (req, res) => {
+
+    const notes = await Note.find({owner: req.user._id}).sort({updatedAt: -1});
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,notes,"Current note fetched successfully")
+    )
+})
+
 export {
     createNotes,
     updateNoteTitle,
-    deleteNotes
+    deleteNotes,
+    getCurrentNote
 }
