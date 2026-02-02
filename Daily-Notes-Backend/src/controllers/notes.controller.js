@@ -68,7 +68,18 @@ const updateNoteTitle = asyncHandler(async (req, res) => {
     )
 })
 
+const deleteNotes = asyncHandler(async (req, res) => {
+    await req.note.deleteOne();
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,{},"Note deleted successfully")
+    )
+})
+
 export {
     createNotes,
-    updateNoteTitle
+    updateNoteTitle,
+    deleteNotes
 }
