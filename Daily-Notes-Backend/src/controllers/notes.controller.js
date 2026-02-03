@@ -8,9 +8,10 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 // DELETE  /notes/:noteId - Done
 // GET     /notes - Done
 
-// POST    /notes/:noteId/contents
-// PUT     /notes/:noteId/contents/:contentId
-// DELETE  /notes/:noteId/contents/:contentId
+// POST    /notes/:noteId/contents - Done
+// PUT     /notes/:noteId/contents/:contentId - Done
+// DELETE  /notes/:noteId/contents/:contentId - Done
+// GET     /notes/:noteId/contents - Done
 
 const createNotes = asyncHandler(async (req, res) => {
 
@@ -90,9 +91,85 @@ const getCurrentNote = asyncHandler(async (req, res) => {
     )
 })
 
+const addContents = asyncHandler(async (req, res) => {
+
+    // Take content
+    const { content } = req.body;
+
+    if(!content) throw new ApiError(400,"Content is required");
+
+    // Normalize input
+    const contents = Array.isArray(content)
+        ? content
+            .map(text => text.trim())
+            .filter(Boolean)
+            .map(text => ({text}))
+        : content.trim() ? [{text: content.trim()}] : []
+
+    if(!contents.length) throw new ApiError(400,"Content cannot be empty");
+
+    // Append content & save
+    req.note.content.push(...contents);
+    await req.note.save();
+
+    // Create & return a response
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,req.note,"Content created successfully")
+    )
+})
+
+const updateContent = asyncHandler(async (req, res) => {
+
+    // Take imformation
+    const { text } = req.body;
+
+    if(!text || text.trim() === "") throw new ApiError(400,"Updated text is required");
+
+    // Set & save
+    req.content.text = text.trim();
+    await req.note.save();
+
+    // Creat & send a response
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,req.content,"Content updated successfully")
+    )
+})
+
+const getCurrentNoteContents = asyncHandler(async (req, res) => {
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,req.note.content,"All contents fetched successfully")
+    )
+})
+
+const deleteContent = asyncHandler(async (req, res) => {
+
+    // Delete the content from the array
+    req.note.content.pull(req.content._id);
+
+    //Save document
+    await req.note.save();
+
+    // Create & send a response
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,null,"Content deleted successfully")
+    )
+})
+
 export {
     createNotes,
     updateNoteTitle,
     deleteNotes,
-    getCurrentNote
+    getCurrentNote,
+    addContents,
+    updateContent,
+    getCurrentNoteContents,
+    deleteContent
 }
