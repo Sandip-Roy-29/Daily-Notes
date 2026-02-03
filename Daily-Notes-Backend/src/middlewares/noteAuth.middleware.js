@@ -23,3 +23,22 @@ export const verifyNoteOwner = asyncHandler(async (req, _, next) => {
     // Move next
     next();
 })
+
+export const verifyContentOwner = asyncHandler(async (req, _, next) => {
+
+    // Take contentId from parameter
+    const { contentId } = req.params;
+
+    if(!contentId) throw new ApiError(400,"Content id is required");
+
+    // Check content belongs to the note or not
+    const content = req.note.content.find(iteam => iteam._id.toString() === contentId);
+
+    if(!content) throw new ApiError(404,"Content does not belongs to this note");
+
+    // Attach content
+    req.content = content;
+
+    // Move next
+    next();
+})
