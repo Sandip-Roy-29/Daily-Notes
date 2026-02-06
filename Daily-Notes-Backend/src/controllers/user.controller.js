@@ -58,17 +58,17 @@ const registerUser = asyncHandler( async (req,res) => {
 const loginUser = asyncHandler(async (req,res) => {
 
     // Take information
-    const {username, email, password} = req.body;
+    const { identifier, password} = req.body;
     
     // Login path - Username or Email
-    if(!username && !email) throw new ApiError(400,"username or email required");
+    if(!identifier) throw new ApiError(400,"username or email required");
 
     if(!password) throw new ApiError(400,"Password is required");
 
     // Find user
     const user = await User.findOne(
         {
-            $or: [{username}, {email}]
+            $or: [{username: identifier}, {email: identifier}]
         }
     )
     
@@ -119,7 +119,8 @@ const logoutUser = asyncHandler(async (req, res) => {
     // Create options
     const options = {
         httpOnly: true,
-        secure: true
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
     }
 
     // Send response
