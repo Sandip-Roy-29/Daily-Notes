@@ -204,9 +204,17 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
     user.refreshToken = undefined;
     await user.save();
 
+    const option = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax"
+    }
+
     // Retuen a response
     return res
     .status(200)
+    .clearCookie("accessToken", option)
+    .clearCookie("refreshToken", option)
     .json(
         new ApiResponse(200,"Password changed successfully")
     )
