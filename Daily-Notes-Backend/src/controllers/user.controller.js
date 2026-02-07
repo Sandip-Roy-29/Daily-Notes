@@ -187,7 +187,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 
     if(newPassword.length < 8) throw new ApiError(400,"Password must be at least 8 character");
 
-    if(newPassword !== confirmPassword) throw new ApiError(400,"Please enter correct password");
+    if(newPassword !== confirmPassword) throw new ApiError(400,"Password do not match");
 
     // Get user
     const user = await User.findById(req.user?._id);
@@ -201,7 +201,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 
     // Set and save new password
     user.password = newPassword;
-    user.refreshToken = undefined;
+    user.refreshToken = null;
     await user.save();
 
     const option = {
