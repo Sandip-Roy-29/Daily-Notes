@@ -5,13 +5,22 @@ import { useNavigate } from "react-router-dom"
 function Login(){
     const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
+    const [error,setError] = useState("")
+    const [loading,setLoading] = useState(false)
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if(!identifier || !password){
+            setError("All fields are required");
+            return;
+        }
+
         try {
-            api.post(
+            setLoading(true);
+            setError("");
+            await api.post(
                 "/users/login",
                 {
                     identifier,
@@ -19,16 +28,19 @@ function Login(){
                 } 
             )
 
-            navigate("/notes");
-        } catch (error) {
-            console.log("Login failed: ", error);
-            
+            navigate("/dashboard");
+        } catch (err) {
+            setError(err.response?.data?.message || "Login failed");            
+        }finally{
+            setLoading(false);
         }
     };
 
     return (
         <div>
             <h2>Login</h2>
+
+            {error && <p style={{color:"red"}}>{error}</p>}
 
             <form onSubmit={handleSubmit}>
                 <div>
@@ -49,7 +61,9 @@ function Login(){
                     />
                 </div>
 
-                <button type="submit"> Login </button>
+                <button type="submit" disabled={loading}>
+                    {loading ? "Loging in..." : "Login"} 
+                </button>
             </form>
         </div>
     )
