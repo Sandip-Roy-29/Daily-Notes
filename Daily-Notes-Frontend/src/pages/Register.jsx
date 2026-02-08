@@ -24,6 +24,7 @@ function Register(){
 
         try {
             setLoading(true);
+            setError("");
             await api.post(
                 "/users/register",
                 {

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import api from "../api/axios";
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../hooks/useAuth";
 
 function Login(){
     const [identifier, setIdentifier] = useState("");
@@ -8,6 +8,7 @@ function Login(){
     const [error,setError] = useState("")
     const [loading,setLoading] = useState(false)
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,14 +21,7 @@ function Login(){
         try {
             setLoading(true);
             setError("");
-            await api.post(
-                "/users/login",
-                {
-                    identifier,
-                    password,
-                } 
-            )
-
+            await login(identifier, password);
             navigate("/dashboard");
         } catch (err) {
             setError(err.response?.data?.message || "Login failed");            

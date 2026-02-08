@@ -1,9 +1,11 @@
-import api from "../api/axios";
+import { useAuth } from "../context/AuthContext";
 
 function LogoutButton() {
+    const { logout } = useAuth();
+
     const handleLogout = async () => {
         try {
-            await api.post("/users/logout");
+            await logout();
             window.location.href = "/login";
         } catch (error) {
             console.log("Logout failed: ",error.response?.data?.message);
