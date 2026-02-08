@@ -163,10 +163,10 @@ const refreshAccessToken = asyncHandler(async (req,res) => {
 
     // Create options 
     const option = {
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict",
-    }
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+};
 
     // Send response
     return res.
