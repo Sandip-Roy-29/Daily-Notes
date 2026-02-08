@@ -1,26 +1,9 @@
-import { useEffect, useState } from "react";
-import api from "../api/axios";
 import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function ProtectedRoute(){
 
-    const [loading,setLoading] = useState(true);
-    const [isAuth,setIsAuth] = useState(false);
-
-    useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                await api.get("/users/current-user");
-                setIsAuth(true);
-            } catch{
-                setIsAuth(false);
-            } finally{
-                setLoading(false);
-            }
-        };
-
-        checkAuth();
-    },[]);
+    const { isAuth, loading} = useAuth();
 
     if(loading) return <p>Checking authentication...</p>
 
