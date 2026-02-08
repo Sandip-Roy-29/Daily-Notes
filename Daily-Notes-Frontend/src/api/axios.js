@@ -8,40 +8,46 @@ const api = axios.create(
 )
 
 api.interceptors.response.use(
+  res => res,
+  async err => {
+    const originalRequest = err.config;
 
-    // Success handler
-    res => res,
+    const isRefreshRequest =
+      originalRequest.url === "/users/refresh-token" ||
+      originalRequest.url?.endsWith("/users/refresh-token");
 
-    // Error handler(4xx/5xx)
-    async err => {
-
-        // Axios attaches the original request config to the error.
-        const originalRequest = err.config;
-
-        // Check for expired access token
-        if(err.response?.status === 401 && !originalRequest._retry){
-            originalRequest._retry = true;
-
-            try {
-
-                // Try refreshing the token
-                await api.post("/users/refresh-token");
-
-                // Retry the original request
-                return api(originalRequest);
-
-            } catch (refreshError) {
-
-                // Redirect to login
-                window.location.href = "/login";
-
-                // Return the error
-                return Promise.reject(refreshError);
-            }
-        }
-        // Return the error
-        return Promise.reject(err);
+    if (isRefreshRequest) {
+      return Promise.reject(err);
     }
-)
+
+    if (
+      err.response?.status === 401 &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
+
+      if (!document.cookie.includes("refreshToken")) {
+        window.location.href = "/login";
+        return Promise.reject(err);
+      }
+
+      try {
+        const refreshRes = await api.post("/users/refresh-token");
+
+        if (refreshRes.status !== 200) {
+          throw new Error("Refresh failed");
+        }
+
+        return api(originalRequest);
+      } catch (refreshError) {
+        window.location.href = "/login";
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(err);
+  }
+);
+
 
 export default api;
