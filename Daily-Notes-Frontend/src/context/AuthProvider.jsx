@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
                 const res = await api.get("/users/current-user");
                 setUser(res.data.data);
             } catch(err) {
-                if(err.rresponse?.status === 401) setUser(null);
+                if(err.response?.status === 401) setUser(null);
             } finally {
                 setLoading(false);
             }

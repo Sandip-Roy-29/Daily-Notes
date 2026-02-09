@@ -10,6 +10,7 @@ import EditProfile from "./pages/EditProfile";
 import { AuthProvider } from "./context/AuthProvider";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
+import CreateNotes from "./pages/CreateNotes";
 
 function App() {
 
@@ -21,13 +22,14 @@ function App() {
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<Register/>}/>
 
-            {/* <Route element={<ProtectedRoute/>}> */}
+            <Route element={<ProtectedRoute/>}>
               <Route path="/notes" element={<Note/>}/>
               <Route path="/change-password" element={<ChangePassword/>}/>
               <Route path="/dashboard" element={<Dashboard/>}/>
               <Route path="/profile" element={<Profile/>}/>
               <Route path="/edit-profile" element={<EditProfile/>}/>
-            {/* </Route> */}
+              <Route path="/notes/new" element={<CreateNotes/>}/>
+            </Route>
           </Routes>
       </AuthProvider>
   )
