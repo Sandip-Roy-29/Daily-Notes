@@ -27,7 +27,11 @@ const createNotes = asyncHandler(async (req, res) => {
             .map(text => text.trim())
             .filter(Boolean)
             .map(text => ({text}))
-        : content.trim() ? [{text: content.trim()}] : [] ;
+        : content
+            .split("\n")
+            .map(text => text.trim())
+            .filter(Boolean)
+            .map(text => ({text}));
 
     if( contents.length === 0) throw new ApiError(400,"Content can not be empty");
 
