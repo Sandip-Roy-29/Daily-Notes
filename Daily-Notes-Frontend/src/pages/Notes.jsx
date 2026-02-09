@@ -3,7 +3,7 @@ import { useNotes } from "../hooks/useNotes";
 import NoteList from "../components/NoteList";
 import NotesSkeleton from "../components/NotesSkeleton";
 
-function Note(){
+function Notes(){
     const { notes, loading, error } = useNotes();
 
     if(loading) return <NotesSkeleton/>;
@@ -18,4 +18,4 @@ function Note(){
     )
 }
 
-export default Note;
+export default Notes;

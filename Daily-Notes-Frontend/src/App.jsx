@@ -1,6 +1,6 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
-import Note from "./pages/Note";
+import Notes from "./pages/Notes";
 import Register from "./pages/Register";
 import ChangePassword from "./pages/ChangePassword";
 import Dashboard from "./pages/Dashboard";
@@ -11,6 +11,7 @@ import { AuthProvider } from "./context/AuthProvider";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import CreateNotes from "./pages/CreateNotes";
+import UpdateNoteTitle from "./pages/UpdateNoteTitle";
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
               <Route path="/profile" element={<Profile/>}/>
               <Route path="/edit-profile" element={<EditProfile/>}/>
               <Route path="/notes/new" element={<CreateNotes/>}/>
+              <Route path="/notes/title" element={<UpdateNoteTitle/>}/>
             </Route>
           </Routes>
       </AuthProvider>
