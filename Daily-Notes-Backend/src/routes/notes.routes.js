@@ -4,11 +4,12 @@ import {
   createNotes,
   updateNoteTitle,
   deleteNotes,
-  getCurrentNote,
+  getAllNotes,
   addContents,
   updateContent,
   getCurrentNoteContents,
   deleteContent,
+  getCurrentNote
 } from '../controllers/notes.controller.js';
 import {
   verifyNoteOwner,
@@ -20,11 +21,14 @@ const router = Router();
 router.route('/').post(verifyJWT, createNotes);
 router.route('/:noteId/title').put(verifyJWT, verifyNoteOwner, updateNoteTitle);
 router.route('/:noteId').delete(verifyJWT, verifyNoteOwner, deleteNotes);
-router.route('/').get(verifyJWT, getCurrentNote);
+router.route('/').get(verifyJWT, getAllNotes);
 router.route('/:noteId/contents').post(verifyJWT, verifyNoteOwner, addContents);
 router
   .route('/:noteId/contents')
   .get(verifyJWT, verifyNoteOwner, getCurrentNoteContents);
+router
+  .route('/:noteId')
+  .get(verifyJWT, verifyNoteOwner, getCurrentNote);
 router
   .route('/:noteId/contents/:contentId')
   .put(verifyJWT, verifyNoteOwner, verifyContentOwner, updateContent);

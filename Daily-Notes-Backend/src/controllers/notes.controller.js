@@ -84,7 +84,7 @@ const deleteNotes = asyncHandler(async (req, res) => {
     )
 })
 
-const getCurrentNote = asyncHandler(async (req, res) => {
+const getAllNotes = asyncHandler(async (req, res) => {
 
     const notes = await Note.find({owner: req.user._id}).sort({updatedAt: -1});
 
@@ -151,6 +151,14 @@ const getCurrentNoteContents = asyncHandler(async (req, res) => {
     )
 })
 
+const getCurrentNote = asyncHandler(async (req, res) => {
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,req.note,"Current note fetched successfully")
+    )
+})
+
 const deleteContent = asyncHandler(async (req, res) => {
 
     // Delete the content from the array
@@ -171,9 +179,10 @@ export {
     createNotes,
     updateNoteTitle,
     deleteNotes,
-    getCurrentNote,
+    getAllNotes,
     addContents,
     updateContent,
     getCurrentNoteContents,
-    deleteContent
+    deleteContent,
+    getCurrentNote
 }
