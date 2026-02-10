@@ -2,6 +2,7 @@ import { useCurrentNote } from "../hooks/useCurrentNote";
 import NoteItem from "../components/NoteItem";
 import { useParams, Link } from "react-router-dom";
 import { useEffect } from "react";
+import DeleteNoteButton from "../components/DeleteNoteButton";
 
 function CurrentNote(){
     const { noteId } = useParams();
@@ -30,6 +31,7 @@ function CurrentNote(){
             </header>
             <NoteItem note={currentNote}/>
             <Link to={`/notes/${noteId}/add-content`}>Add content</Link>
+            <DeleteNoteButton noteId={noteId}/>
         </div>
     )
 }

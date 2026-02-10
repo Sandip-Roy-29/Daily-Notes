@@ -43,6 +43,11 @@ export const CurrentNoteProvider = ({children}) => {
         ))
     }
 
+    const deleteCurrentNote = async (noteId) => {
+        await deleteNote(noteId);
+        setCurrentNote(null);
+    }
+
     const addNoteContent = async (noteId, text) => {
         const res = await addContents(noteId, { content: text});
         setCurrentNote(prev => (
@@ -90,6 +95,7 @@ export const CurrentNoteProvider = ({children}) => {
                 updateNoteContent,
                 removeNoteContent,
                 removeNote,
+                deleteCurrentNote
             }}>
                 {children}
             </CurrentNoteContext.Provider>
