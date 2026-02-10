@@ -14,12 +14,13 @@ export const CurrentNoteProvider = ({children}) => {
     const [error,setError] = useState(null);
     const [currentNote,setCurrentNote] = useState(null);
 
-    const fetchCurrentNote = useCallback(async (noteId, signal) => {
+    const fetchCurrentNote = useCallback(async (noteId) => {
+        const controller = new AbortController();
         try {
             setLoading(true);
             setError(null);
 
-            const res = await getCurrentNote(noteId, signal);
+            const res = await getCurrentNote(noteId, controller.signal);
             setCurrentNote(res.data.data);
         } catch (err) {
             if(err.name !== "CanceledError"){
@@ -28,6 +29,8 @@ export const CurrentNoteProvider = ({children}) => {
         } finally{
             setLoading(false);
         }
+
+        return () => controller.abort();
     },[]);
 
     const updateTitle = async(noteId, title) => {

@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import Notes from "./pages/Notes";
 import Register from "./pages/Register";
@@ -12,6 +12,8 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import CreateNotes from "./pages/CreateNotes";
 import UpdateNoteTitle from "./pages/UpdateNoteTitle";
+import CurrentNote from "./pages/CurrentNote";
+import { CurrentNoteProvider } from "./context/CurrentNoteProvider";
 
 function App() {
 
@@ -30,8 +32,17 @@ function App() {
               <Route path="/profile" element={<Profile/>}/>
               <Route path="/edit-profile" element={<EditProfile/>}/>
               <Route path="/notes/new" element={<CreateNotes/>}/>
-              <Route path="/notes/title" element={<UpdateNoteTitle/>}/>
-            </Route>
+              <Route path="/notes/:noteId/edit-title" element={
+                <CurrentNoteProvider>
+                  <UpdateNoteTitle/>
+                </CurrentNoteProvider>
+                }/>
+              <Route path="/notes/:noteId" element={
+                <CurrentNoteProvider>
+                <CurrentNote/>
+                </CurrentNoteProvider>
+                }/>
+              </Route>
           </Routes>
       </AuthProvider>
   )

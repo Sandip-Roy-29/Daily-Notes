@@ -20,6 +20,10 @@ export const deleteNote = (noteId) => {
     return api.delete(`/notes/${noteId}`);
 }
 
+export const fetchAllCurrentNoteContents = (noteId) => {
+    return api.get(`/notes/${noteId}/contents`);
+}
+
 export const addContents = (noteId, data) => {
     return api.post(`/notes/${noteId}/contents`,data);
 }
@@ -28,6 +32,6 @@ export const updateContents = (noteId, contentId, data) => {
     return api.put(`/notes/${noteId}/contents/${contentId}`,data);
 }
 
-export const deleteContent = (noteId, contentId) => {
+export const deleteContents = (noteId, contentId) => {
     return api.delete(`/notes/${noteId}/contents/${contentId}`);
 }
