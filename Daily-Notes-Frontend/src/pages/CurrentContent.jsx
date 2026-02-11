@@ -7,7 +7,11 @@ function CurrentContent() {
     const { noteId } = useParams();
 
     useEffect(() => {
-        fetchCurrentNote(noteId);
+        const controller = AbortController();
+
+        fetchCurrentNote(noteId, controller.signal);
+
+        return () => controller.abort();
     },[noteId, fetchCurrentNote]);
 
     if (loading) return <p>Loading content...</p>;

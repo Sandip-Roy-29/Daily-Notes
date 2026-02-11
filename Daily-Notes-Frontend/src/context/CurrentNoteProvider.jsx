@@ -10,17 +10,16 @@ import {
 } from "../api/note.api";
 
 export const CurrentNoteProvider = ({children}) => {
-    const [loading,setLoading] = useState(true);
+    const [loading,setLoading] = useState(false);
     const [error,setError] = useState(null);
     const [currentNote,setCurrentNote] = useState(null);
 
-    const fetchCurrentNote = useCallback(async (noteId) => {
-        const controller = new AbortController();
+    const fetchCurrentNote = useCallback(async (noteId, signal) => {
         try {
             setLoading(true);
             setError(null);
 
-            const res = await getCurrentNote(noteId, controller.signal);
+            const res = await getCurrentNote(noteId, signal);
             setCurrentNote(res.data.data);    
         } catch (err) {
             if(err.name !== "CanceledError"){
@@ -30,7 +29,6 @@ export const CurrentNoteProvider = ({children}) => {
             setLoading(false);
         }
 
-        return () => controller.abort();
     },[]);
 
     const updateTitle = async(noteId, title) => {
