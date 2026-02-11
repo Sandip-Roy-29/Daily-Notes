@@ -14,6 +14,7 @@ import CreateNotes from "./pages/CreateNotes";
 import UpdateNoteTitle from "./pages/UpdateNoteTitle";
 import CurrentNote from "./pages/CurrentNote";
 import { CurrentNoteProvider } from "./context/CurrentNoteProvider";
+import CurrentContent from "./pages/CurrentContent";
 
 function App() {
 
@@ -40,6 +41,11 @@ function App() {
               <Route path="/notes/:noteId" element={
                 <CurrentNoteProvider>
                 <CurrentNote/>
+                </CurrentNoteProvider>
+                }/>
+              <Route path="/notes/:noteId/contents" element={
+                <CurrentNoteProvider>
+                <CurrentContent/>
                 </CurrentNoteProvider>
                 }/>
               </Route>

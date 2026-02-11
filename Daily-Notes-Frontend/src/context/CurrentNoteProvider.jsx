@@ -21,7 +21,7 @@ export const CurrentNoteProvider = ({children}) => {
             setError(null);
 
             const res = await getCurrentNote(noteId, controller.signal);
-            setCurrentNote(res.data.data);
+            setCurrentNote(res.data.data);    
         } catch (err) {
             if(err.name !== "CanceledError"){
                 setError("Failed to load note");
@@ -95,7 +95,7 @@ export const CurrentNoteProvider = ({children}) => {
                 updateNoteContent,
                 removeNoteContent,
                 removeNote,
-                deleteCurrentNote
+                deleteCurrentNote,
             }}>
                 {children}
             </CurrentNoteContext.Provider>
