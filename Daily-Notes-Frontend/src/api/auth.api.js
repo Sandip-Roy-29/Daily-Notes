@@ -1,36 +1,36 @@
 import api from "./axios"
 
-export const registerUser = (data) => {
-    const res = api.post("/users/register", data);
+export const registerUser = async (data) => {
+    const res = await api.post("/users/register", data);
     return res.data;
 }
 
-export const loginUser = (data) => {
-    const res = api.post("/users/login", data);
+export const loginUser = async (data) => {
+    const res = await api.post("/users/login", data);
     return res.data;
 }
 
-export const logoutUser = () => {
-    const res = api.post("/users/logout");
+export const logoutUser = async () => {
+    const res = await api.post("/users/logout");
     return res.data;
 }
 
-export const refreshTokens = () => {
-    const res = api.post("/users/refresh-token");
+export const refreshTokens = async () => {
+    const res = await api.post("/users/refresh-token");
     return res.data;
 }
 
-export const changePassword = (data) => {
-    const res = api.post("/users/change-password", data);
+export const changePassword = async (data) => {
+    const res = await api.post("/users/change-password", data);
     return res.data;
 }
 
-export const fetchUser = () => {
-    const res = api.get("/users/current-user");
+export const fetchUser = async () => {
+    const res = await api.get("/users/current-user");
     return res.data;
 }
 
-export const updateUserInfo = (data) => {
-    const res = api.put("/users/update-credentials", data);
+export const updateUserInfo = async (data) => {
+    const res = await api.put("/users/update-credentials", data);
     return res.data;
 }
