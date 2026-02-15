@@ -32,55 +32,91 @@ export const CurrentNoteProvider = ({children}) => {
     },[]);
 
     const updateTitle = async(noteId, title) => {
-        const res = await updateNoteTitle(noteId, { title });
-        setCurrentNote(prev => (
-            {
-                ...prev,
-                title: res.data.data.title
-            }
-        ))
+
+        try {
+            setError(null);
+            setLoading(true);
+            const res = await updateNoteTitle(noteId, { title });
+            setCurrentNote(prev => (
+                prev? {
+                    ...prev,
+                    title: res.data.data.title
+                } : prev
+            ))
+        } catch (err) {
+            setError(err.response?.data?.message || "Failed to update title");
+        } finally {
+            setLoading(false);
+        }
     }
 
     const deleteCurrentNote = async (noteId) => {
-        await deleteNote(noteId);
-        setCurrentNote(null);
+        try {
+            setError(null);
+            setLoading(true);
+            await deleteNote(noteId);
+            setCurrentNote(null);
+        } catch (err) {
+            setError(err.response?.data?.message);
+        } finally {
+            setLoading(false);
+        }
     }
 
     const addNoteContent = async (noteId, text) => {
-        const res = await addContents(noteId, { content: text});
-        setCurrentNote(prev => (
-            {
-                ...prev,
-                content: res.data.data.content
-            }
-        ))
+        try {
+            setError(null);
+            setLoading(true);
+            const res = await addContents(noteId, { content: text});
+            setCurrentNote(prev => (
+                prev ? {
+                    ...prev,
+                    content: res.data.data.content
+                } : prev
+            ))
+        } catch (err) {
+            setError(err.response?.data?.message || "Failed to add content");
+        } finally {
+            setLoading(false);
+        }
     }
     
     const updateNoteContent = async (noteId, contentId, text) => {
-        const res = await updateContents(noteId, contentId, { text});
-        setCurrentNote(prev => (
-            {
-                ...prev,
-                content: res.data.data.content
-            }
-        ))
+        try {
+            setError(null);
+            setLoading(true);
+            const res = await updateContents(noteId, contentId, { text});
+            setCurrentNote(prev => (
+                prev ? {
+                    ...prev,
+                    content: res.data.data.content
+                } : prev
+            ))
+        } catch (err) {
+            setError(err.response?.data?.message);
+        } finally {
+            setLoading(false);
+        }
     }
     
     const removeNoteContent = async (noteId, contentId) => {
-        const res = await deleteContents(noteId, contentId);
-        setCurrentNote(prev => (
-            {
-                ...prev,
-                content: res.data.data.content
-            }
-        ))
+        try {
+            setError(null);
+            setLoading(true);
+            const res = await deleteContents(noteId, contentId);
+            setCurrentNote(prev => (
+                prev ? {
+                    ...prev,
+                    content: res.data.data.content
+                } : prev
+            ))
+        } catch (err) {
+            setError(err.response?.data?.message || "Failed to remove content");
+        } finally {
+            setLoading(false);
+        }
     }
-
-    const removeNote = async (noteId) => {
-        await deleteNote(noteId);
-        setCurrentNote(null);
-    }
-
+    
     return(
         <CurrentNoteContext.Provider
             value={{
@@ -92,7 +128,6 @@ export const CurrentNoteProvider = ({children}) => {
                 addNoteContent,
                 updateNoteContent,
                 removeNoteContent,
-                removeNote,
                 deleteCurrentNote,
             }}>
                 {children}
