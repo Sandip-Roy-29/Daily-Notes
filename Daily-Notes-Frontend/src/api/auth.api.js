@@ -34,3 +34,8 @@ export const updateUserInfo = async (data) => {
     const res = await api.put("/users/update-credentials", data);
     return res.data;
 }
+
+export const deleteUser = async () => {
+    const res = await api.delete("/users/delete");
+    return res.data;
+}
