@@ -18,7 +18,10 @@ api.interceptors.response.use(
         const url = originalRequest?.url;
 
         // 1️⃣ Ignore public auth check
-        if (url?.includes("/users/current-user")) {
+        if (url?.includes("/users/current-user") ||
+            url?.includes("/users/login") ||
+            url?.includes("/users/register")
+        ) {
             return Promise.reject(error);
         }
 
@@ -36,7 +39,7 @@ api.interceptors.response.use(
                 return api(originalRequest);
             } catch (refreshError) {
                 // Hard logout
-                window.location.href = "/login";
+                // window.location.href = "/auth";
                 return Promise.reject(refreshError);
             }
         }
