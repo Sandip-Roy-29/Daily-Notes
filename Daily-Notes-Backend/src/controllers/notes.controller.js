@@ -139,7 +139,7 @@ const updateContent = asyncHandler(async (req, res) => {
     return res
     .status(200)
     .json(
-        new ApiResponse(200,req.content,"Content updated successfully")
+        new ApiResponse(200,req.note,"Content updated successfully")
     )
 })
 
@@ -171,7 +171,7 @@ const deleteContent = asyncHandler(async (req, res) => {
     return res
     .status(200)
     .json(
-        new ApiResponse(200,null,"Content deleted successfully")
+        new ApiResponse(200,req.note,"Content deleted successfully")
     )
 })
 

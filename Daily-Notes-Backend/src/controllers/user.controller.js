@@ -62,9 +62,9 @@ const loginUser = asyncHandler(async (req,res) => {
     
     // Login path - Username or Email
     if(!identifier) throw new ApiError(400,"username or email required");
-
+    
     if(!password) throw new ApiError(400,"Password is required");
-
+    
     // Find user
     const user = await User.findOne(
         {
@@ -76,6 +76,7 @@ const loginUser = asyncHandler(async (req,res) => {
     
     // Validation
     const isPasswordValid = await user.isPasswordCorrect(password);
+    
     if(!isPasswordValid) throw new ApiError(401,"Password is invalid");
     
     // generate access and refresh token
@@ -90,6 +91,7 @@ const loginUser = asyncHandler(async (req,res) => {
 
     // Create object
     const safeUser = user.toObject();
+    
     delete safeUser.password;
     delete safeUser.refreshToken;
 
@@ -135,7 +137,6 @@ const refreshAccessToken = asyncHandler(async (req,res) => {
 
     // Take refresh token
     const incomingRefreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
-    console.log(incomingRefreshToken);
     
     if(! incomingRefreshToken) throw new ApiError(401,"Unauthorized request");
 
@@ -179,9 +180,9 @@ const refreshAccessToken = asyncHandler(async (req,res) => {
 const changeCurrentPassword = asyncHandler(async (req, res) => {
 
     // Take the information
-    const {oldPassword, newPassword, confirmPassword} = req.body;
+    const {currentPassword, newPassword, confirmPassword} = req.body;
 
-    if([oldPassword, newPassword, confirmPassword].some(field => !field || field === "")){
+    if([currentPassword, newPassword, confirmPassword].some(field => !field || field === "")){
         throw new ApiError(400,"All fields are required");
     }
 
@@ -195,7 +196,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
     if (!user) throw new ApiError(401, "User not found");
 
     // Change user password
-    const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+    const isPasswordCorrect = await user.isPasswordCorrect(currentPassword);
 
     if(!isPasswordCorrect) throw new ApiError(401,"Invalid credentials");
 
@@ -231,13 +232,12 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 const updateAccountDetails = asyncHandler(async (req,res) => {
 
     // Take information
-    const { username, email } = req.body;
+    const { username } = req.body;
 
     // Validation
-    if([username, email].some(field => !field || field.trim() == "")) throw new ApiError(400,"All fields are required");
+    if(!username.trim()) throw new ApiError(400,"Username is required");
     
     if (username === req.user.username) throw new ApiError(400, "Username is unchanged");
-    if (email === req.user.email) throw new ApiError(400, "Email is unchanged");
 
     // Take user and change credentials
     const user = await User.findByIdAndUpdate(
@@ -245,7 +245,6 @@ const updateAccountDetails = asyncHandler(async (req,res) => {
         {
             $set:{
                 username: username,
-                email: email
             }
         },
         {
@@ -263,6 +262,29 @@ const updateAccountDetails = asyncHandler(async (req,res) => {
     )
 })
 
+const deleteAccount = asyncHandler(async (req, res) => {
+     try {
+        const userId = req.user._id;
+
+        await User.findByIdAndDelete(userId);
+
+        // Clear cookies
+        res.clearCookie("accessToken");
+        res.clearCookie("refreshToken");
+
+        return res.status(200).json({
+            success: true,
+            message: "Account deleted successfully"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Failed to delete account"
+        });
+    }
+})
+
 export { 
     registerUser,
     loginUser,
@@ -270,5 +292,6 @@ export {
     refreshAccessToken,
     changeCurrentPassword,
     getCurrentUser,
-    updateAccountDetails
+    updateAccountDetails,
+    deleteAccount
 };
