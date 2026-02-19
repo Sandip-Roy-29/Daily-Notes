@@ -32,7 +32,7 @@ export const verifyContentOwner = asyncHandler(async (req, _, next) => {
     if(!contentId) throw new ApiError(400,"Content id is required");
 
     // Check content belongs to the note or not
-    const content = req.note.content.find(iteam => iteam._id.toString() === contentId);
+    const content = req.note.content.find(item => item._id.toString() === contentId);
 
     if(!content) throw new ApiError(404,"Content does not belongs to this note");
 
