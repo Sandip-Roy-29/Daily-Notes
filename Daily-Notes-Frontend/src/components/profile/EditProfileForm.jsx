@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
 
 function EditProfileForm(){
     const [error, setError] = useState(null);
@@ -21,7 +23,10 @@ function EditProfileForm(){
             setSuccess(null);
             setLoading(true);
             const res = await UpdateInfo(username);
-            if(res) setSuccess("Username updated successfully");
+            if(res) {
+                setSuccess("Username updated successfully");
+                setUsername("");
+            }
         } catch (err) {
             setError(err.response?.data?.message || "Failed to change username");
         } finally {
@@ -31,24 +36,27 @@ function EditProfileForm(){
     }
 
     return(
-        <div>
-            <form onSubmit={handleSubmit}>
-            <div>
-                <label>Username</label>
-                <input 
-                type="text"
-                placeholder="Enter new username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)} 
+        <div className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <Input 
+                    label="Username"
+                    type="text"
+                    placeholder="Enter new username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    error={error}
                 />
-            </div>
-            <button type="submit" disabled={loading}>
-                {loading ? "Updating..." : "Update"}
-            </button>
+                <Button 
+                    type="submit" 
+                    disabled={loading}
+                    loading={loading}
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                >
+                    Update Username
+                </Button>
             </form>
 
-            {error && <p style={{color:"red"}}>{error}</p>}
-            {success && <p style={{color:"green"}}>{success}</p>}
+            {success && <p className="text-green-400 text-sm">{success}</p>}
         </div>
     )
 }

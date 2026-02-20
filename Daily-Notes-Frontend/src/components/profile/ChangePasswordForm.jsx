@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
 
 function ChangePasswordForm(){
     const [error, setError] = useState(null);
@@ -21,17 +23,17 @@ function ChangePasswordForm(){
         }
 
         if(newPassword.length < 8){
-            setError("Password must be atleast 8 character");
+            setError("Password must be at least 8 characters");
             return;
         }
         
         if(newPassword !== confirmPassword){
-            setError("Password do not match");
+            setError("Passwords do not match");
             return;
         }
         
         if(newPassword === currentPassword){
-            setError("New password must be different");
+            setError("New password must be different from current");
             return;
         }
 
@@ -41,8 +43,8 @@ function ChangePasswordForm(){
             setLoading(true);
             const res =  await changeUserPassword(
                 currentPassword,
-            newPassword,
-            confirmPassword
+                newPassword,
+                confirmPassword
             );
             if(res) {
                 setSuccess("Password changed successfully");
@@ -63,42 +65,41 @@ function ChangePasswordForm(){
     }
 
     return(
-        <div>
-            <form onSubmit={handleSubmit}>
-            <div>
-                <label>Current Password</label>
-                <input 
-                type="password"
-                placeholder="Enter current password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)} 
+        <div className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <Input 
+                    label="Current Password"
+                    type="password"
+                    placeholder="Enter current password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
                 />
-            </div>
-            <div>
-                <label>New Password</label>
-                <input 
-                type="password"
-                placeholder="Password must be atleast 8 character"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)} 
+                <Input 
+                    label="New Password"
+                    type="password"
+                    placeholder="Password must be at least 8 characters"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
                 />
-            </div>
-            <div>
-                <label>Confirm Password</label>
-                <input 
-                type="password"
-                placeholder="Enter confirm password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)} 
+                <Input 
+                    label="Confirm Password"
+                    type="password"
+                    placeholder="Re-enter new password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                 />
-            </div>
-            <button type="submit" disabled={loading}>
-                {loading ? "Updating..." : "Update"}
-            </button>
+                <Button 
+                    type="submit" 
+                    disabled={loading}
+                    loading={loading}
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                >
+                    Update Password
+                </Button>
             </form>
 
-            {error && <p style={{color:"red"}}>{error}</p>}
-            {success && <p style={{color:"green"}}>{success}</p>}
+            {error && <p className="text-red-400 text-sm">{error}</p>}
+            {success && <p className="text-green-400 text-sm">{success}</p>}
         </div>
     )
 }
