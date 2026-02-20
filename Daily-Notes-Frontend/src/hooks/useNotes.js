@@ -11,6 +11,7 @@ export const useNotes = () => {
 
         const loadNotes = async () => {
             try {
+                setError(null);
                 const res = await fetchNotes(controller.signal);
                 setNotes(res.data.data);
                 

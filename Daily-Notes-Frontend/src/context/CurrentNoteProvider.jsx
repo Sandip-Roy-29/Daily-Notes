@@ -10,9 +10,9 @@ import {
 } from "../api/note.api";
 
 export const CurrentNoteProvider = ({children}) => {
-    const [loading,setLoading] = useState(false);
-    const [error,setError] = useState(null);
-    const [currentNote,setCurrentNote] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [currentNote, setCurrentNote] = useState(null);
 
     const fetchCurrentNote = useCallback(async (noteId, signal) => {
         try {
@@ -25,24 +25,19 @@ export const CurrentNoteProvider = ({children}) => {
             if(err.name !== "CanceledError"){
                 setError("Failed to load note");
             }
-        } finally{
+        } finally {
             setLoading(false);
         }
-
-    },[]);
+    }, []);
 
     const updateTitle = async(noteId, title) => {
-
         try {
             setError(null);
             setLoading(true);
             const res = await updateNoteTitle(noteId, { title });
-            setCurrentNote(prev => (
-                prev? {
-                    ...prev,
-                    title: res.data.data.title
-                } : prev
-            ))
+            
+            // ✅ Update entire note with fresh data
+            setCurrentNote(res.data.data);
         } catch (err) {
             setError(err.response?.data?.message || "Failed to update title");
         } finally {
@@ -57,7 +52,7 @@ export const CurrentNoteProvider = ({children}) => {
             await deleteNote(noteId);
             setCurrentNote(null);
         } catch (err) {
-            setError(err.response?.data?.message);
+            setError(err.response?.data?.message || "Failed to delete note");
         } finally {
             setLoading(false);
         }
@@ -68,12 +63,9 @@ export const CurrentNoteProvider = ({children}) => {
             setError(null);
             setLoading(true);
             const res = await addContents(noteId, { content: text});
-            setCurrentNote(prev => (
-                prev ? {
-                    ...prev,
-                    content: res.data.data.content
-                } : prev
-            ))
+            
+            // ✅ Update entire note with fresh data
+            setCurrentNote(res.data.data);
         } catch (err) {
             setError(err.response?.data?.message || "Failed to add content");
         } finally {
@@ -86,14 +78,11 @@ export const CurrentNoteProvider = ({children}) => {
             setError(null);
             setLoading(true);
             const res = await updateContents(noteId, contentId, { text});
-            setCurrentNote(prev => (
-                prev ? {
-                    ...prev,
-                    content: res.data.data.content
-                } : prev
-            ))
+            
+            // ✅ Update entire note with fresh data
+            setCurrentNote(res.data.data);
         } catch (err) {
-            setError(err.response?.data?.message);
+            setError(err.response?.data?.message || "Failed to update content");
         } finally {
             setLoading(false);
         }
@@ -104,12 +93,9 @@ export const CurrentNoteProvider = ({children}) => {
             setError(null);
             setLoading(true);
             const res = await deleteContents(noteId, contentId);
-            setCurrentNote(prev => (
-                prev ? {
-                    ...prev,
-                    content: res.data.data.content
-                } : prev
-            ))
+            
+            // ✅ Update entire note with fresh data
+            setCurrentNote(res.data.data);
         } catch (err) {
             setError(err.response?.data?.message || "Failed to remove content");
         } finally {
