@@ -12,15 +12,22 @@ const errorHandler = (err, req, res, next) => {
             }
         )
     }
+    let response;
+    if(process.env.NODE_ENV === "test" || process.env.NODE_ENV === development){
+        response = {
+            success: false,
+            message: err.message,
+        }
+    }else{
+        response = {
+            success: false,
+            message: "Internal Server Error"
+        }
+    }
 
     return res
     .status(500)
-    .json(
-        {
-            success: false,
-            message:"Internal Server Error",
-        }
-    )
+    .json(response)
 }
 
 export default errorHandler;
