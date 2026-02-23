@@ -4,6 +4,14 @@ import { verifyJWT } from "../middlewares/auth.middleware.js"
 
 const router = Router();
 
+router.get("/health", (_, res) => {
+    res.status(200).json({ 
+        success: true,
+        message: "User routes are healthy!",
+        timestamp: new Date().toISOString()
+    });
+});
+
 router.route("/register").post(registerUser);
 router.route("/login").post(loginUser);
 router.route("/logout").post(logoutUser);
