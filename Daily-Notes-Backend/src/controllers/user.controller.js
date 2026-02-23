@@ -28,6 +28,19 @@ const registerUser = asyncHandler( async (req,res) => {
     if([username,email,password].some((field) => !field || field.trim() === "")){
         throw new ApiError(400,"All fields are required");
     }
+
+    // ✅ ADD THIS: Password strength validation
+    if(password.length < 8) {
+        throw new ApiError(400,"Password must be at least 8 characters long");
+    }
+    
+    if(!/[A-Z]/.test(password)) {
+        throw new ApiError(400,"Password must contain at least one uppercase letter");
+    }
+    
+    if(!/[0-9]/.test(password)) {
+        throw new ApiError(400,"Password must contain at least one number");
+    }
     
     // check if user already existed or not
     const existedUser = await User.findOne({
@@ -38,7 +51,7 @@ const registerUser = asyncHandler( async (req,res) => {
     
     // create user object and enter in DB
     const user = await User.create({
-        username: username.toLowerCase(),
+        username,
         email,
         password,
     })
@@ -68,7 +81,7 @@ const loginUser = asyncHandler(async (req,res) => {
     // Find user
     const user = await User.findOne(
         {
-            $or: [{username: identifier.trim().toLowerCase()}, {email: identifier}]
+            $or: [{username: identifier.trim()}, {email: identifier}]
         }
     )
     
@@ -86,7 +99,9 @@ const loginUser = asyncHandler(async (req,res) => {
     const options = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: "strict",
+        path: "/", // Cookie will be sent for all routes
+        maxAge: 24 * 60 * 60 * 1000,
     }
 
     // Create object
@@ -111,18 +126,25 @@ const logoutUser = asyncHandler(async (req, res) => {
     const refreshToken = req.cookies?.refreshToken;
 
     // Reset refresh token
-    if(refreshToken){
-        await User.findOneAndUpdate(
-            { refreshToken },
-            { $unset: { refreshToken:1 }}
-        );
+    if(!refreshToken){
+        return res
+        .status(401)
+        .json(new ApiResponse(401,{}, " Unauthorized request"))
+    }
+
+    const user = await User.findOne({ refreshToken });
+    
+    if(user){
+        user.refreshToken = undefined;
+        await user.save();
     }
 
     // Create options
     const options = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: "strict",
+        path: "/",
     }
 
     // Send response
@@ -139,21 +161,30 @@ const refreshAccessToken = asyncHandler(async (req,res) => {
     const incomingRefreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
     
     if(! incomingRefreshToken) throw new ApiError(401,"Unauthorized request");
-
-    // Decode the token
-    let decodedToken;
+    
+    // Check user exist or not
+    const user = await User.findOne({ refreshToken: incomingRefreshToken });
+    if(!user) throw new ApiError(403,"Invalid refresh token");
+    
     try {
-        decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+        jwt.verify(
+            incomingRefreshToken,
+            process.env.REFRESH_TOKEN_SECRET
+        );
     } catch (error) {
-        throw new ApiError(401,"Invalid or expired refresh token");
+        user.refreshToken = undefined;
+        await user.save({ validateBeforeSave: false });
+
+        throw new ApiError(403, "Expired or invalid refresh token");
     }
 
-    // Check user exist or not
-    const user = await User.findById(decodedToken._id);
-    if(!user) throw new ApiError(401,"Invalid refresh token");
-
     // Token rotation
-    if(incomingRefreshToken !== user?.refreshToken) throw new ApiError(401,"Refresh token is expired or used");
+    if(incomingRefreshToken !== user?.refreshToken) {
+        user.refreshToken = undefined;
+        await user.save({ validateBeforeSave: false });
+
+        throw new ApiError(401,"Refresh token is expired or used");
+    }
 
     // New token generation
     const {refreshToken, accessToken} = await generateAccessAndRefreshToken(user);
@@ -166,7 +197,10 @@ const refreshAccessToken = asyncHandler(async (req,res) => {
     const option = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    sameSite:"strict",
+    path: "/",
+    maxAge: 24 * 60 * 60 * 1000,
+
 };
 
     // Send response
@@ -174,7 +208,7 @@ const refreshAccessToken = asyncHandler(async (req,res) => {
     status(200)
     .cookie("accessToken", accessToken, option)
     .cookie("refreshToken", refreshToken, option)
-    .json(new ApiResponse(200,{accessToken: accessToken, refreshToken: refreshToken},"Access token refreshed"));
+    .json(new ApiResponse(200,{},"Access token refreshed"));
 })
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
@@ -186,10 +220,23 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
         throw new ApiError(400,"All fields are required");
     }
 
-    if(newPassword.length < 8) throw new ApiError(400,"Password must be at least 8 character");
+ // ✅ ADD THIS: Password strength validation
+    if(newPassword.length < 8) {
+        throw new ApiError(400," New password must be at least 8 characters long");
+    }
+    
+    if(!/[A-Z]/.test(newPassword)) {
+        throw new ApiError(400,"New password must contain at least one uppercase letter");
+    }
+    
+    if(!/[0-9]/.test(newPassword)) {
+        throw new ApiError(400," New password must contain at least one number");
+    }
 
     if(newPassword !== confirmPassword) throw new ApiError(400,"Password do not match");
 
+    if(newPassword === currentPassword) throw new ApiError(400,"Password must be different with current password");
+    
     // Get user
     const user = await User.findById(req.user?._id);
 
@@ -205,17 +252,19 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
     user.refreshToken = null;
     await user.save();
 
-    const option = {
+    const options = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax"
+        sameSite: "strict",
+        path: "/", // Cookie will be sent for all routes
+        maxAge: 24 * 60 * 60 * 1000,
     }
 
     // Retuen a response
     return res
     .status(200)
-    .clearCookie("accessToken", option)
-    .clearCookie("refreshToken", option)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
     .json(
         new ApiResponse(200,"Password changed successfully")
     )
@@ -263,26 +312,24 @@ const updateAccountDetails = asyncHandler(async (req,res) => {
 })
 
 const deleteAccount = asyncHandler(async (req, res) => {
-     try {
-        const userId = req.user._id;
+    const userId = req.user._id;
 
-        await User.findByIdAndDelete(userId);
+    const deletedUser = await User.findByIdAndDelete(userId);
+    
+    if (!deletedUser) throw new ApiError(404, "User not found");
 
-        // Clear cookies
-        res.clearCookie("accessToken");
-        res.clearCookie("refreshToken");
-
-        return res.status(200).json({
-            success: true,
-            message: "Account deleted successfully"
-        });
-
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Failed to delete account"
-        });
+    const options = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        path: "/",
     }
+
+    return res
+        .status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json(new ApiResponse(200, {}, "Account deleted successfully"));
 })
 
 export { 
