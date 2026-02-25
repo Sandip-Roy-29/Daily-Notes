@@ -1,22 +1,25 @@
 import { Note } from "../models/notes.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import mongoose from "mongoose";
 
 export const verifyNoteOwner = asyncHandler(async (req, _, next) => {
 
     // Take noteId from parameter
     const { noteId } = req.params;
 
-    if(!noteId) throw new ApiError(400,"Node id is required");
-
+    if (!mongoose.Types.ObjectId.isValid(noteId)) {
+        throw new ApiError(400, "Invalid note id");
+    }
+    
     // Note exist or not
     const note = await Note.findById(noteId);
-
+    
     if(!note) throw new ApiError(404,"Note does not exist");
-
+    
     // Check note belongs to the user or not
     if(!note.owner.equals(req.user._id)) throw new ApiError(403,"You are not allowed to modify this note");
-
+    
     // Attach note to the req
     req.note = note;
 
@@ -28,8 +31,10 @@ export const verifyContentOwner = asyncHandler(async (req, _, next) => {
 
     // Take contentId from parameter
     const { contentId } = req.params;
-
-    if(!contentId) throw new ApiError(400,"Content id is required");
+    
+    if (!mongoose.Types.ObjectId.isValid(contentId)) {
+        throw new ApiError(400, "Invalid content id");
+    }
 
     // Check content belongs to the note or not
     const content = req.note.content.find(item => item._id.toString() === contentId);
