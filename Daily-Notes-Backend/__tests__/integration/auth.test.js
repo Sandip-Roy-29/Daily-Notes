@@ -1,21 +1,11 @@
-import mongoose from 'mongoose'; // Connects to mongoDB
-import { User } from '../src/models/user.model.js'; // Used to clean test data
 import request from 'supertest'; // Send fake HTTP request to the app
-import app from '../src/app.js'; // My express app (without starting server)
+import app from '../../src/app.js'; // My express app (without starting server)
 import 'dotenv/config';
 import jwt from 'jsonwebtoken';
+import "./setup.js";
+import { getAuthSetup } from './utils/auth.util.js';
+import { User } from "../../src/models/user.model";
 
-let testUserId;
-
-beforeAll(async () => {
-  await mongoose.connect(process.env.MONGODB_URI_TEST);
-});
-beforeEach(async () => {
-  await User.deleteMany({});
-});
-afterAll(async () => {
-  await mongoose.connection.close();
-});
 
 describe('User Registration', () => {
   test('should register a new user with valid credentials', async () => {
@@ -24,12 +14,12 @@ describe('User Registration', () => {
       email: 'test@gmail.com',
       password: 'SecurePass123',
     });
-
+    console.log("Register error: ",response.error.text);
+    
     expect(response.statusCode).toBe(201);
     expect(response.body.success).toBe(true);
     expect(response.body.data.username).toBe('testuser');
     expect(response.body.data.password).toBeUndefined();
-    testUserId = response.body.data._id;
   });
 
   test('should failed on duplicate email', async () => {
@@ -222,18 +212,8 @@ describe('User Logout', () => {
   let user;
 
   beforeEach(async () => {
-    await User.create({
-      username: 'testuser',
-      email: 'test@gmail.com',
-      password: 'SecureUser123',
-    });
-
-    const loginRes = await request(app).post('/api/v1/users/login').send({
-      identifier: 'test@gmail.com',
-      password: 'SecureUser123',
-    });
-
-    cookies = loginRes.headers['set-cookie'];
+    const authData = await getAuthSetup();
+    cookies = authData.cookies;
   });
 
   test('Should logout successfully', async () => {
@@ -270,17 +250,8 @@ describe('Protected Routes', () => {
   let cookies;
 
   beforeEach(async () => {
-    await User.create({
-      username: 'testuser',
-      email: 'test@gmail.com',
-      password: 'SecurePass123',
-    });
-
-    const response = await request(app).post('/api/v1/users/login').send({
-      identifier: 'test@gmail.com',
-      password: 'SecurePass123',
-    });
-    cookies = response.headers['set-cookie'];
+    const authData = await getAuthSetup();
+    cookies = authData.cookies;
   });
 
   test('should access protected route with valid token', async () => {
@@ -306,18 +277,8 @@ describe('User password change', () => {
   let cookies;
 
   beforeEach(async () => {
-    await User.create({
-      username: 'testuser',
-      email: 'test@gmail.com',
-      password: 'SecurePass123',
-    });
-
-    const response = await request(app).post('/api/v1/users/login').send({
-      identifier: 'test@gmail.com',
-      password: 'SecurePass123',
-    });
-
-    cookies = response.headers['set-cookie'];
+    const authData = await getAuthSetup();
+    cookies = authData.cookies;
   });
 
   test('should password change with valid crendentials', async () => {
@@ -462,17 +423,8 @@ describe('User account details change', () => {
   let cookies;
 
   beforeEach(async () => {
-    await User.create({
-      username: 'testuser',
-      email: 'test@gmail.com',
-      password: 'SecurePass123',
-    });
-
-    const loginRes = await request(app).post('/api/v1/users/login').send({
-      identifier: 'test@gmail.com',
-      password: 'SecurePass123',
-    });
-    cookies = loginRes.headers['set-cookie'];
+    const authData = await getAuthSetup();
+    cookies = authData.cookies;
   });
 
   test('should username changed ', async () => {
@@ -521,18 +473,8 @@ describe('User deletion', () => {
   let cookies;
 
   beforeEach(async () => {
-    await User.create({
-      username: 'testuser',
-      email: 'test@gmail.com',
-      password: 'SecurePass123',
-    });
-
-    const loginRes = await request(app).post('/api/v1/users/login').send({
-      identifier: 'test@gmail.com',
-      password: 'SecurePass123',
-    });
-
-    cookies = loginRes.headers['set-cookie'];
+    const authData = await getAuthSetup();
+    cookies = authData.cookies;
   });
 
   test('should user delete', async () => {
@@ -583,18 +525,9 @@ describe('Token refresh', () => {
   let oldRefresh;
 
   beforeEach(async () => {
-    await User.create({
-      username: 'testuser',
-      email: 'test@gmail.com',
-      password: 'SecurePass123',
-    });
+    const authData = await getAuthSetup();
+    oldCookies = authData.cookies;
 
-    const loginRes = await request(app).post('/api/v1/users/login').send({
-      identifier: 'test@gmail.com',
-      password: 'SecurePass123',
-    });
-
-    oldCookies = loginRes.headers['set-cookie'];
     expect(oldCookies).toBeDefined();
     oldRefresh = oldCookies.find((c) => c.startsWith('refreshToken='));
   });
@@ -608,6 +541,8 @@ describe('Token refresh', () => {
     expect(newCookies).toBeDefined();
     const newRefresh = newCookies.find((c) => c.startsWith('refreshToken='));
 
+    console.log("rotate refresh: ",refreshRes.error.text);
+    
     expect(newRefresh).toBeDefined();
     expect(newRefresh).not.toEqual(oldRefresh);
   });
