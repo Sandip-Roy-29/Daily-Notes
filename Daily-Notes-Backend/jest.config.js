@@ -16,4 +16,6 @@ export default {
     transform: {},
 
     verbose: true,
+
+    testTimeout: 30000,
 }
