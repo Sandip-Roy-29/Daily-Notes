@@ -17,10 +17,9 @@ const createNotes = asyncHandler(async (req, res) => {
 
     // Take information
     const { title, content } = req.body;
-
-    // Validation
-    if(!content ) throw new ApiError(400,"Content is mandatory");
     
+    if(!content) throw new ApiError(400,"Content is required");
+
     // Content normalization
     const contents = Array.isArray(content) 
         ? content
