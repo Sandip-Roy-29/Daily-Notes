@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js"
 import { User } from "../models/user.model.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken";
+import { validatePasswordStrength } from "../utils/passwordValidator.js"
 
 const generateAccessAndRefreshToken = async (user) => {
     try {
@@ -29,18 +30,7 @@ const registerUser = asyncHandler( async (req,res) => {
         throw new ApiError(400,"All fields are required");
     }
 
-    // ✅ ADD THIS: Password strength validation
-    if(password.length < 8) {
-        throw new ApiError(400,"Password must be at least 8 characters long");
-    }
-    
-    if(!/[A-Z]/.test(password)) {
-        throw new ApiError(400,"Password must contain at least one uppercase letter");
-    }
-    
-    if(!/[0-9]/.test(password)) {
-        throw new ApiError(400,"Password must contain at least one number");
-    }
+    validatePasswordStrength(password);
     
     // check if user already existed or not
     const existedUser = await User.findOne({
@@ -220,18 +210,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
         throw new ApiError(400,"All fields are required");
     }
 
- // ✅ ADD THIS: Password strength validation
-    if(newPassword.length < 8) {
-        throw new ApiError(400," New password must be at least 8 characters long");
-    }
-    
-    if(!/[A-Z]/.test(newPassword)) {
-        throw new ApiError(400,"New password must contain at least one uppercase letter");
-    }
-    
-    if(!/[0-9]/.test(newPassword)) {
-        throw new ApiError(400," New password must contain at least one number");
-    }
+    validatePasswordStrength(newPassword);
 
     if(newPassword !== confirmPassword) throw new ApiError(400,"Password do not match");
 
