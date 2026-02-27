@@ -14,7 +14,6 @@ describe('User Registration', () => {
       email: 'test@gmail.com',
       password: 'SecurePass123',
     });
-    console.log("Register error: ",response.error.text);
     
     expect(response.statusCode).toBe(201);
     expect(response.body.success).toBe(true);
@@ -541,8 +540,6 @@ describe('Token refresh', () => {
     expect(newCookies).toBeDefined();
     const newRefresh = newCookies.find((c) => c.startsWith('refreshToken='));
 
-    console.log("rotate refresh: ",refreshRes.error.text);
-    
     expect(newRefresh).toBeDefined();
     expect(newRefresh).not.toEqual(oldRefresh);
   });
