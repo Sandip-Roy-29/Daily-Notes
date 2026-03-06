@@ -13,7 +13,7 @@ const errorHandler = (err, req, res, next) => {
         )
     }
     let response;
-    if(process.env.NODE_ENV === "test" || process.env.NODE_ENV === development){
+    if(process.env.NODE_ENV === "test" || process.env.NODE_ENV === "development"){
         response = {
             success: false,
             message: err.message,
