@@ -23,8 +23,6 @@ export const sendMail = async({name, email, type, subject, message}) => {
       `
     })
 
-    console.log("Email sent successfully:", result.messageId);
-
     return result;
     
   } catch (error) {
