@@ -24,7 +24,6 @@ export const AuthProvider = ({ children }) => {
       try {
         const res = await fetchUser();
         setUser(res.data);
-        console.log("fetch user is called");
       } catch (err) {
         if (err.response?.status === 401) {
           // Not logged in — normal state
@@ -64,7 +63,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await loginUser({ identifier, password });
       setUser(res.data);
-      console.log("login user is called");
 
       return { success: true };
     } catch (err) {
