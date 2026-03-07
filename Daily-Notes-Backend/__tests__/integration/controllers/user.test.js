@@ -1,10 +1,10 @@
 import request from 'supertest'; // Send fake HTTP request to the app
-import app from '../../src/app.js'; // My express app (without starting server)
+import app from '../../../src/app.js'; // My express app (without starting server)
 import 'dotenv/config';
 import jwt from 'jsonwebtoken';
-import "./setup.js";
-import { getAuthSetup } from './utils/auth.util.js';
-import { User } from "../../src/models/user.model";
+import "../setup.js";
+import { getAuthSetup } from '../utils/auth.util.js';
+import { User } from "../../../src/models/user.model.js";
 
 
 describe('User Registration', () => {

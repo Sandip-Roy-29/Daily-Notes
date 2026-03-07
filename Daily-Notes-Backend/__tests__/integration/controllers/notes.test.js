@@ -1,8 +1,8 @@
 import  request  from "supertest";
-import "./setup";
-import { getAuthSetup } from "./utils/auth.util";
-import app from "../../src/app";
-import { getNoteSetup } from "./utils/notes.util";
+import "../setup";
+import { getAuthSetup } from "../utils/auth.util";
+import app from "../../../src/app";
+import { getNoteSetup } from "../utils/notes.util";
 
 describe("Note creation", () => {
     let cookies;
