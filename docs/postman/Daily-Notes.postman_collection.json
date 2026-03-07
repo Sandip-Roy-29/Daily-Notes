@@ -1,0 +1,373 @@
+{
+  "info": {
+    "_postman_id": "6dffd4dd-b63b-4b07-a30d-94f6bb56bac0",
+    "name": "Daily-Notes",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "45012010",
+    "_collection_link": "https://go.postman.co/collection/45012010-6dffd4dd-b63b-4b07-a30d-94f6bb56bac0?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "user",
+      "item": [
+        {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"Sandip Roy\",\r\n    \"email\": \"sandip@gmail.com\",\r\n    \"password\": \"SecurePass123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/users/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"identifier\": \"sandip@gmail.com\",\r\n    \"password\": \"SecurePass123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/users/login",
+              "host": [
+                "{{server}}"
+              ],
+              "path": [
+                "users",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/users/logout",
+              "host": [
+                "{{server}}"
+              ],
+              "path": [
+                "users",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "refresh-tokens",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/users/refresh-token",
+              "host": [
+                "{{server}}"
+              ],
+              "path": [
+                "users",
+                "refresh-token"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "current-user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/users/current-user",
+              "host": [
+                "{{server}}"
+              ],
+              "path": [
+                "users",
+                "current-user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "change-password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"oldPassword\": \"123\",\r\n    \"newPassword\": \"12345678\",\r\n    \"confirmPassword\": \"12345678\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/users/change-password",
+              "host": [
+                "{{server}}"
+              ],
+              "path": [
+                "users",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update-credentials",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"pappu\",\r\n    \"email\": \"pappu@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/users/update-credentials",
+              "host": [
+                "{{server}}"
+              ],
+              "path": [
+                "users",
+                "update-credentials"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "notes",
+      "item": [
+        {
+          "name": "create-notes",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"content\": [\"Wake up early\",\"have to go gym\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/notes/create-notes",
+              "host": [
+                "{{server}}"
+              ],
+              "path": [
+                "notes",
+                "create-notes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update-notes-title",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"daily routine\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/notes/6980b0566fa0bac7997f4654/title",
+              "host": [
+                "{{server}}"
+              ],
+              "path": [
+                "notes",
+                "6980b0566fa0bac7997f4654",
+                "title"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete-notes",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/notes/6980b0566fa0bac7997f4654",
+              "host": [
+                "{{server}}"
+              ],
+              "path": [
+                "notes",
+                "6980b0566fa0bac7997f4654"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-current-notes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/notes",
+              "host": [
+                "{{server}}"
+              ],
+              "path": [
+                "notes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "add-contents",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"content\":[\"today is very importent day\",\"I graduated today\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/notes/69804f6344ddd9661c20092d/contents",
+              "host": [
+                "{{server}}"
+              ],
+              "path": [
+                "notes",
+                "69804f6344ddd9661c20092d",
+                "contents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get-current-note-contents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/notes/69804f6344ddd9661c20092d/contents",
+              "host": [
+                "{{server}}"
+              ],
+              "path": [
+                "notes",
+                "69804f6344ddd9661c20092d",
+                "contents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update-content",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"text\": \"I GOT A JOB\"delete\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server}}/notes/69804f6344ddd9661c20092d/contents/69819d5408a9ac05bdcc74a8",
+              "host": [
+                "{{server}}"
+              ],
+              "path": [
+                "notes",
+                "69804f6344ddd9661c20092d",
+                "contents",
+                "69819d5408a9ac05bdcc74a8"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete-contents",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{server}}/notes/69804f6344ddd9661c20092d/contents/69819d5408a9ac05bdcc74a8",
+              "host": [
+                "{{server}}"
+              ],
+              "path": [
+                "notes",
+                "69804f6344ddd9661c20092d",
+                "contents",
+                "69819d5408a9ac05bdcc74a8"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
