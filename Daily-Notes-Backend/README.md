@@ -2,6 +2,13 @@
 
 A secure and scalable RESTful API for a note-taking application, built with **Node.js, Express, MongoDB, and JWT authentication**. This project demonstrates clean architecture, proper authorization, and real-world backend practices.
 
+![Node.js](https://img.shields.io/badge/Node.js-18+-green?logo=node.js)
+![Express](https://img.shields.io/badge/Express-4.21-blue?logo=express)
+![MongoDB](https://img.shields.io/badge/MongoDB-Latest-green?logo=mongodb)
+![Jest](https://img.shields.io/badge/Tested%20with-Jest-orange?logo=jest)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+
+
 ## 🏗 Architecture
 
 ![System Architecture](../docs/images/backend/architecture.drawio.png)
@@ -29,12 +36,6 @@ A secure and scalable RESTful API for a note-taking application, built with **No
 ## 🚦 Rate Limiting
 
 ![Error Flow](../docs/images/backend/Rate-Limit.png)
-
-![Node.js](https://img.shields.io/badge/Node.js-18+-green?logo=node.js)
-![Express](https://img.shields.io/badge/Express-4.21-blue?logo=express)
-![MongoDB](https://img.shields.io/badge/MongoDB-Latest-green?logo=mongodb)
-![Jest](https://img.shields.io/badge/Tested%20with-Jest-orange?logo=jest)
-![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
 
