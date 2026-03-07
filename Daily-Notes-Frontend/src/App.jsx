@@ -1,14 +1,14 @@
-
 import { AuthProvider } from "./context/AuthProvider";
-import Navbar from "./components/layout/Navbar";
+import { CurrentNoteProvider } from "./context/CurrentNoteProvider";
 import AppRoutes from "./routes/AppRoutes";
 
 function App() {
 
   return (
     <AuthProvider>
-      <Navbar/>
-      <AppRoutes/>  
+      <CurrentNoteProvider>
+        <AppRoutes/>  
+      </CurrentNoteProvider>
     </AuthProvider>
   )
 }
