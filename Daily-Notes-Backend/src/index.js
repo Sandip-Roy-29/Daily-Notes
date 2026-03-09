@@ -19,10 +19,12 @@ if (missingEnvVars.length > 0) {
     process.exit(1);
 }
 
+const PORT = process.env.PORT || 8000;
+
 connectDB()
 .then(() => {
-    app.listen(process.env.PORT || 8000, () => {
-        console.log(`Server is running on port: ${process.env.PORT}`);
+    app.listen(PORT,"0.0.0.0", () => {
+        console.log(`Server is running on port: ${PORT}`);
         console.log(`Environment: ${process.env.NODE_ENV}`);
     })
 })
