@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import errorHandler from "./middlewares/error.middleware.js";
 import helmet from "helmet";
 import morgan from "morgan";
-import { limiter } from "../src/middlewares/rateLimiter.middleware.js";
+import { limiter } from "./middlewares/rateLimiter.middleware.js";
 
 const app = express();
 
@@ -26,25 +26,20 @@ if(process.env.NODE_ENV !== "test"){
     app.use(morgan(morganFormat));
 }
 
-const allowedOrigins = process.env.CORS_ORIGIN.split(",");
+const allowedOrigins = process.env.CORS_ORIGIN?.split(",") || [];
 
 app.use(cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
 
-      const isAllowed = allowedOrigins.some((allowedOrigin) =>
-        origin.startsWith(allowedOrigin.trim())
-      );
+    const isAllowed = allowedOrigins.some((allowedOrigin) =>
+      origin.startsWith(allowedOrigin.trim())
+    );
 
-      if (isAllowed) {
-        callback(null, true);
-      } else {
-        callback(null, false);
-      }
-    },
-    credentials: true,
-  }));
-app.options("/.*/", cors());
+    callback(null, isAllowed);
+  },
+  credentials: true
+}));
 app.use(express.json({limit: "16kb"}));
 app.use(express.urlencoded({limit: "16kb", extended: true}));
 app.use(cookieParser());
