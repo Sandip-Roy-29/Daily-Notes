@@ -288,7 +288,6 @@ export default function Contact() {
                   Send an email to our support team.
                 </p>
                 <a
-                  href="mailto:dailynotes24x7@gmail.com"
                   className="inline-flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors break-all"
                 >
                   dailynotes24x7@gmail.com

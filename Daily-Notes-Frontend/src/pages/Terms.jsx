@@ -86,7 +86,14 @@ function Terms() {
           <section>
             <h2 className="text-2xl font-semibold text-white mb-3">8. Contact</h2>
             <p className="text-gray-300 leading-relaxed">
-              If you have questions about these terms, please contact us at support@daily-notes.com
+              If you have questions about these terms, please{" "}
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-8 transition-colors"
+              >
+                contact
+              </Link>{" "}
+              us.
             </p>
           </section>
 
