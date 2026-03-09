@@ -29,9 +29,15 @@ if(process.env.NODE_ENV !== "test"){
 const allowedOrigins = process.env.CORS_ORIGIN.split(",");
 
 app.use(cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
-}));
+  }));
 app.use(express.json({limit: "16kb"}));
 app.use(express.urlencoded({limit: "16kb", extended: true}));
 app.use(cookieParser());
