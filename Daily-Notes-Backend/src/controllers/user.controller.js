@@ -89,7 +89,7 @@ const loginUser = asyncHandler(async (req,res) => {
     const options = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         path: "/", // Cookie will be sent for all routes
         maxAge: 24 * 60 * 60 * 1000,
     }
@@ -133,7 +133,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     const options = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         path: "/",
     }
 
@@ -187,7 +187,7 @@ const refreshAccessToken = asyncHandler(async (req,res) => {
     const option = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite:"strict",
+    sameSite:"none",
     path: "/",
     maxAge: 24 * 60 * 60 * 1000,
 
@@ -234,7 +234,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
     const options = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         path: "/", // Cookie will be sent for all routes
         maxAge: 24 * 60 * 60 * 1000,
     }
@@ -300,7 +300,7 @@ const deleteAccount = asyncHandler(async (req, res) => {
     const options = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         path: "/",
     }
 

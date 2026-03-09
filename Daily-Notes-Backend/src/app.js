@@ -26,8 +26,10 @@ if(process.env.NODE_ENV !== "test"){
     app.use(morgan(morganFormat));
 }
 
+const allowedOrigins = process.env.CORS_ORIGIN.split(",");
+
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: allowedOrigins,
     credentials: true,
 }));
 app.use(express.json({limit: "16kb"}));
